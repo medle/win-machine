@@ -1,0 +1,62 @@
+﻿<Window x:Class="WinMachine.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WinMachine.App"
+        mc:Ignorable="d"
+        Title="InductorMachine" 
+        Height="400" 
+        Width="700" 
+        ShowInTaskbar="False" 
+        Icon="pack://application:,,,/Images/SpiralGalaxy.png">
+    
+    <DockPanel Margin="2">
+        
+        <!-- Controls bar at the top. -->
+        <DockPanel DockPanel.Dock="Top"
+                   LastChildFill="False">
+            <Button Content="{Binding OpenCloseButtonText}" 
+                    MinWidth="70"
+                    Command="{Binding OpenCloseCommand}"/>
+            <TextBlock Width="20"/>
+            <TextBlock Text="Frequency,Hz "
+                       VerticalAlignment="Center"/>
+            <TextBox Text="{Binding FrequencyText, UpdateSourceTrigger=LostFocus}" 
+                     MinWidth="40"
+                     FontWeight="Bold"/>
+            <TextBlock Text=" Duty cycle,% "
+                       VerticalAlignment="Center"/>
+            <TextBox Text="{Binding DutyCycleText, UpdateSourceTrigger=PropertyChanged}" 
+                     MinWidth="40"
+                     FontWeight="Bold"/>
+            <TextBlock Width="4"/>
+            <TextBlock Text="Samples: " VerticalAlignment="Center"/>
+            <TextBlock Width="70" 
+                       Text="{Binding SamplesPerPeriodValue}" 
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+            <TextBlock Width="2"/>
+            <Button Content="{Binding StartStopButtonText}" 
+                    MinWidth="70"
+                    Command="{Binding StartStopCommand}"/>
+            <TextBlock Width="20"/>
+            <CheckBox Content="Log" IsChecked="{Binding IsLogChecked}"/>
+            <!--
+            <Button Content="Click"
+                    MinWidth="70"
+                    Command="{Binding ClickCommand}"/>
+            -->
+        </DockPanel>
+        
+        <!-- Status bar at the bottom. -->
+        <DockPanel DockPanel.Dock="Bottom">
+            <TextBlock Text="Log " VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding LogLines}" SelectedItem="{Binding SelectedLogLine}"/>
+        </DockPanel>
+
+        <!-- Graph drawing fills space inside. -->
+        <local:GraphDrawingVisual x:Name="MainGraphDrawingVisual"/>
+
+    </DockPanel>
+</Window>
