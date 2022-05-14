@@ -28,7 +28,7 @@ namespace WinMachine.App
       this.graphDrawing = graphDrawing;
 
       pollTimer = new DispatcherTimer();
-      pollTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
+      pollTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
       pollTimer.Tick += delegate { OnPollTimer(); }; 
 
       UpdateLabelsAfterModeChange();
@@ -39,8 +39,9 @@ namespace WinMachine.App
       Log("Loaded.");
 
       // initial values
-      FrequencyText = "2500";
-      DutyCycleText = "50";
+      FrequencyText = "5000";
+      DutyCycleText = "10";
+      NumChopsText = "0";
 
       // open device on startup
       InvokeOnUIThread(new Action(OnOpenClose));
@@ -109,6 +110,15 @@ namespace WinMachine.App
       }
     }
 
+    private string _numChopsText;
+    public string NumChopsText {
+      get => _numChopsText;
+      set {
+        _numChopsText = value;
+        RaisePropertyChanged(nameof(NumChopsText));
+      }
+    }
+
     private string _samplesPerPeriodValue;
     public string SamplesPerPeriodValue
     {
@@ -169,9 +179,10 @@ namespace WinMachine.App
         isStarted = false;
       } else {
         try {
-          int micros = machineDevice.ConvertFrequencyToMicroseconds(FrequencyText);
-          int duty1024 = machineDevice.ConvertDutyCycleToBase1024(DutyCycleText);
-          Log(machineDevice.StartPWM(micros, duty1024));
+          int micros = machineDevice.ConvertFrequencyToMicroseconds(this.FrequencyText);
+          int duty1024 = machineDevice.ConvertDutyCycleToBase1024(this.DutyCycleText);
+          int numChops = Int32.Parse(this.NumChopsText);
+          Log(machineDevice.StartPWM(micros, duty1024, numChops));
           isStarted = true;
           pollTimer.Start();
         } catch (Exception e) {
@@ -216,9 +227,10 @@ namespace WinMachine.App
         graphDrawing.DrawGraph(1, samples, AdcSampleProfile.ACS712AC8bit);
         MaybeLogAdc(1, logText, samples);
 
-        logText = machineDevice.RunADC(2, samples);
-        graphDrawing.DrawGraph(2, samples, AdcSampleProfile.ACS712AC8bit);
-        MaybeLogAdc(2, logText, samples);
+        // not used
+        //logText = machineDevice.RunADC(2, samples);
+        //graphDrawing.DrawGraph(2, samples, AdcSampleProfile.ACS712AC8bit);
+        //MaybeLogAdc(2, logText, samples);
       }
     }
 

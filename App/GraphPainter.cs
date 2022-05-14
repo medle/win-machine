@@ -68,7 +68,9 @@ namespace WinMachine.App
       string text = graphId.ToString();
       var typeface = new Typeface("Arial");
       double emSize = (graphH / 20);
-      var ft = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, emSize, graphBrush);
+      double pixelsPerDip = 1;
+      var ft = new FormattedText(text, CultureInfo.CurrentCulture,
+        FlowDirection.LeftToRight, typeface, emSize, graphBrush, pixelsPerDip);
       dc.DrawText(ft, new Point(graphX + (ft.Width * graphId), graphY - ft.Height));
 
       int numPoints = samples.Count();

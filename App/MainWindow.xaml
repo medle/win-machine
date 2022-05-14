@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="InductorMachine" 
         Height="400" 
-        Width="700" 
+        Width="750" 
         ShowInTaskbar="False" 
         Icon="pack://application:,,,/Images/SpiralGalaxy.png">
     
@@ -28,6 +28,11 @@
             <TextBlock Text=" Duty cycle,% "
                        VerticalAlignment="Center"/>
             <TextBox Text="{Binding DutyCycleText, UpdateSourceTrigger=PropertyChanged}" 
+                     MinWidth="40"
+                     FontWeight="Bold"/>
+            <TextBlock Text=" #Chops "
+                       VerticalAlignment="Center"/>
+            <TextBox Text="{Binding NumChopsText, UpdateSourceTrigger=PropertyChanged}" 
                      MinWidth="40"
                      FontWeight="Bold"/>
             <TextBlock Width="4"/>
