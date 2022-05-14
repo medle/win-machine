@@ -226,7 +226,7 @@ namespace WinMachine.App
         logText = machineDevice.RunADC(1, samples);
         graphDrawing.DrawGraph(1, samples, AdcSampleProfile.ACS712AC8bit);
         MaybeLogAdc(1, logText, samples);
-
+          
         // not used
         //logText = machineDevice.RunADC(2, samples);
         //graphDrawing.DrawGraph(2, samples, AdcSampleProfile.ACS712AC8bit);
