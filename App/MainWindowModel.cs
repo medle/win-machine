@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Threading;
-
+using System.Windows.Input;
 using WinMachine.Mvvm;
-using WinMachine.Machine;
-using System.IO.Packaging;
-using System.Reflection;
 
 namespace WinMachine.App
 {
@@ -55,6 +52,12 @@ namespace WinMachine.App
         pollTimer.Stop();
         machineDevice.Close();
       }
+    }
+
+    public void OnWindowKeyDown(KeyEventArgs e)
+    {
+      if (e.Key == Key.Right) Log("right");
+      if (e.Key == Key.Left) Log("left");
     }
 
     public void Dispose()

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace WinMachine.App
 {
@@ -19,12 +20,14 @@ namespace WinMachine.App
       this.DispatcherUnhandledException += OnDispatcherUnhandledException;
 
       var mainWindow = new MainWindow();
+
       Application.Current.MainWindow = mainWindow;
       Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
       using (var model = new MainWindowModel(mainWindow.MainGraphDrawingVisual)) {
         mainWindow.Loaded += delegate { model.OnWindowLoaded(); };
-        mainWindow.Closed += delegate { model.OnWindowClosed(); }; 
+        mainWindow.Closed += delegate { model.OnWindowClosed(); };
+        mainWindow.KeyDown += delegate (object sender, KeyEventArgs key) { model.OnWindowKeyDown(key); };
         mainWindow.DataContext = model;
         mainWindow.Show();
       }

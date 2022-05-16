@@ -63,9 +63,9 @@
     <Compile Include="App\GraphPainter.cs" />
     <Compile Include="App\IGraphDrawing.cs" />
     <Compile Include="App\GraphDrawingVisual.cs" />
-    <Compile Include="Machine\MachineDevice.cs" />
-    <Compile Include="Machine\AdcSampleProfile.cs" />
-    <Compile Include="Machine\SerialConnection.cs">
+    <Compile Include="App\MachineDevice.cs" />
+    <Compile Include="App\AdcSampleProfile.cs" />
+    <Compile Include="App\SerialConnection.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="App\MainWindowModel.cs" />
