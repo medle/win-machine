@@ -39,7 +39,7 @@ namespace WinMachine.Machine
     // 23.09.2020: 0A=128adc, 1.74A=145adc, 1.74*2.87=5, (145-128=17)*2.87=49
     // +5A=>128+49=177, -5A=128-49=79
     //public static readonly AdcSampleProfile ACS712AC8bit = new AdcSampleProfile(false, 81, 179);
-    // manually adjusted 09/05/2022 to get zero amp at the center
-    public static readonly AdcSampleProfile ACS712AC8bit = new AdcSampleProfile(false, 77, 175);
+    // manually adjusted 15/05/2022 to get zero amp at the center (notebook)
+    public static readonly AdcSampleProfile ACS712AC8bit = new AdcSampleProfile(false, 83, 181);
   }
 }
