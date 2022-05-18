@@ -71,6 +71,8 @@ namespace WinMachine.App
     public RelayCommand OpenCloseCommand => new RelayCommand(OnOpenClose);
     public RelayCommand StartStopCommand => new RelayCommand(OnStartStop);
     public RelayCommand ClickCommand => new RelayCommand(OnClick);
+    public RelayCommand PlusCommand => new RelayCommand(OnPlus);
+    public RelayCommand MinusCommand => new RelayCommand(OnMinus);
 
     public ObservableCollection<string> LogLines { get; private set; } = new ObservableCollection<string>();
 
@@ -214,6 +216,9 @@ namespace WinMachine.App
     {
       RunADCAndDrawGraph();
     }
+
+    private void OnPlus() => MoveFrequency(true);
+    private void OnMinus() => MoveFrequency(false);
 
     private void MoveFrequency(bool higher)
     {

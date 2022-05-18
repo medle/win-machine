@@ -45,6 +45,8 @@
             <Button Content="{Binding StartStopButtonText}" 
                     MinWidth="70"
                     Command="{Binding StartStopCommand}"/>
+            <Button Content=" + " Command="{Binding PlusCommand}"/>
+            <Button Content=" - " Command="{Binding MinusCommand}"/>
             <TextBlock Width="20"/>
             <CheckBox Content="Log" IsChecked="{Binding IsLogChecked}"/>
             <!--
