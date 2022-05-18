@@ -7,8 +7,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-using WinMachine.Machine;
-
 namespace WinMachine.App
 {
   public class GraphPainter

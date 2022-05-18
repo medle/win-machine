@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using WinMachine.Machine;
-
 namespace WinMachine.App
 {
   public interface IGraphDrawing

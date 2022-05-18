@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Threading;
 using System.Windows.Input;
+using System.Globalization;
 using WinMachine.Mvvm;
 
 namespace WinMachine.App
@@ -56,8 +57,8 @@ namespace WinMachine.App
 
     public void OnWindowKeyDown(KeyEventArgs e)
     {
-      if (e.Key == Key.Right) Log("right");
-      if (e.Key == Key.Left) Log("left");
+      if (e.Key == Key.Right) MoveFrequency(true);
+      if (e.Key == Key.Left) MoveFrequency(false);
     }
 
     public void Dispose()
@@ -212,6 +213,31 @@ namespace WinMachine.App
     private void OnClick()
     {
       RunADCAndDrawGraph();
+    }
+
+    private void MoveFrequency(bool higher)
+    {
+      double hz, duty;
+      if (double.TryParse(this.FrequencyText, out hz) &&
+          double.TryParse(this.DutyCycleText, out duty))
+      {
+        // increase/decrease frequency by 1% retaining the pulse width
+        double periodSec = 1 / hz;
+        double dutySec = periodSec * duty / 100;
+        double newPeriodSec = periodSec * (higher ? 0.99 : 1.01);
+        double newDuty = dutySec / newPeriodSec * 100;
+        double newFreq = 1 / newPeriodSec;
+
+        this.FrequencyText = newFreq.ToString("F2");
+        this.DutyCycleText = newDuty.ToString("F2");
+        if (isOpen && isStarted) {
+          OnStartStop();
+          OnStartStop();
+        }
+      }
+      else {
+        Log("Failed to convert frequency/duty");
+      }
     }
 
     private void RunADCAndDrawGraph()
