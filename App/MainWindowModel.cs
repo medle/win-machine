@@ -168,7 +168,7 @@ namespace WinMachine.App
       } else {
         machineDevice.Open();
         Log($"Opened device: {machineDevice.PortName} at {machineDevice.BaudRate}");
-        Log($"Device version: {machineDevice.Version}");
+        Log($"Device: {machineDevice.Hello}");
         isOpen = true;
       }
 
