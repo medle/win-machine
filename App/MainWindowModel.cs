@@ -37,9 +37,9 @@ namespace WinMachine.App
       Log("Loaded.");
 
       // initial values
-      FrequencyText = "5000";
-      DutyCycleText = "10";
-      NumChopsText = "0";
+      FrequencyText = "8300";
+      DutyCycleText = "15";
+      DeadClocksText = "10";
 
       // open device on startup
       InvokeOnUIThread(new Action(OnOpenClose));
@@ -117,11 +117,11 @@ namespace WinMachine.App
     }
 
     private string _numChopsText;
-    public string NumChopsText {
+    public string DeadClocksText {
       get => _numChopsText;
       set {
         _numChopsText = value;
-        RaisePropertyChanged(nameof(NumChopsText));
+        RaisePropertyChanged(nameof(DeadClocksText));
       }
     }
 
@@ -187,8 +187,8 @@ namespace WinMachine.App
         try {
           int micros = machineDevice.ConvertFrequencyToMicroseconds(this.FrequencyText);
           int duty1024 = machineDevice.ConvertDutyCycleToBase1024(this.DutyCycleText);
-          int numChops = Int32.Parse(this.NumChopsText);
-          Log(machineDevice.StartPWM(micros, duty1024, numChops));
+          int deadClocks = Int32.Parse(this.DeadClocksText);
+          Log(machineDevice.StartPWM(micros, duty1024, deadClocks));
           isStarted = true;
           pollTimer.Start();
         } catch (Exception e) {
@@ -258,11 +258,11 @@ namespace WinMachine.App
         MaybeLogAdc(0, logText, samples);
 
         logText = machineDevice.RunADC(1, samples);
-        graphDrawing.DrawGraph(1, samples, AdcSampleProfile.ACS712AC8bit);
+        graphDrawing.DrawGraph(1, samples, AdcSampleProfile.ACS712_5A8bit);
         MaybeLogAdc(1, logText, samples);
         
         logText = machineDevice.RunADC(2, samples);
-        graphDrawing.DrawGraph(2, samples, AdcSampleProfile.ACS712AC8bit);
+        graphDrawing.DrawGraph(2, samples, AdcSampleProfile.ACS712_30A8bit);
         MaybeLogAdc(2, logText, samples);
       }
     }

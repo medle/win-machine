@@ -40,6 +40,9 @@ namespace WinMachine.App
     // +5A=>128+49=177, -5A=128-49=79
     //public static readonly AdcSampleProfile ACS712AC8bit = new AdcSampleProfile(false, 81, 179);
     // manually adjusted 15/05/2022 to get zero amp at the center (notebook)
-    public static readonly AdcSampleProfile ACS712AC8bit = new AdcSampleProfile(false, 83, 181);
+    public static readonly AdcSampleProfile ACS712_5A8bit = new AdcSampleProfile(false, 79, 177);
+
+    // (0.5V,4.5V) => (-30A,+30A) from=255*10/100=25 to=255-25=230
+    public static readonly AdcSampleProfile ACS712_30A8bit = new AdcSampleProfile(false, 25, 230);
   }
 }

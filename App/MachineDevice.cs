@@ -75,8 +75,8 @@ namespace WinMachine.App
 
     public string Version => RunCommand("VERSION");
 
-    public string StartPWM(int micros, int duty1024, int numChops) 
-      => RunCommand($"PWM {micros} {duty1024} {numChops}");
+    public string StartPWM(int micros, int duty1024, int deadClocks) 
+      => RunCommand($"PWM {micros} {duty1024} {deadClocks}");
 
     public string RunADC(int analogPin) => RunCommand($"ADC {analogPin}");
 

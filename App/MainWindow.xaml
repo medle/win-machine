@@ -30,9 +30,9 @@
             <TextBox Text="{Binding DutyCycleText, UpdateSourceTrigger=PropertyChanged}" 
                      MinWidth="40"
                      FontWeight="Bold"/>
-            <TextBlock Text=" #Chops "
+            <TextBlock Text=" #DTI "
                        VerticalAlignment="Center"/>
-            <TextBox Text="{Binding NumChopsText, UpdateSourceTrigger=PropertyChanged}" 
+            <TextBox Text="{Binding DeadClocksText, UpdateSourceTrigger=PropertyChanged}" 
                      MinWidth="40"
                      FontWeight="Bold"/>
             <TextBlock Width="4"/>
