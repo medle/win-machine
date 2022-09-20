@@ -19,11 +19,11 @@ namespace WinMachine.App
         {
         }
 
-        public void Open()
+        public void Open(string serialPortName, int baudRate)
         {
             if (!IsOpen)
             {
-                serial = new SerialConnection("COM14");
+                serial = new SerialConnection(serialPortName, baudRate);
                 serial.DtrEnable = true; // necessary for PiPico
                 serial.NewLine = "\r\n";
                 serial.Open();

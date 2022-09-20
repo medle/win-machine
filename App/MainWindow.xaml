@@ -8,56 +8,100 @@
         Title="InductorMachine" 
         Height="400" 
         Width="750" 
-        ShowInTaskbar="False" 
+        ShowInTaskbar="False"
+        Background="white"
         Icon="pack://application:,,,/Images/SpiralGalaxy.png">
-    
-    <DockPanel Margin="2">
-        
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <DockPanel>
+
         <!-- Controls bar at the top. -->
         <DockPanel DockPanel.Dock="Top"
-                   LastChildFill="False">
-            <Button Content="{Binding OpenCloseButtonText}" 
+                   Background="#eeeeee">
+            <DockPanel DockPanel.Dock="Top"
+                       LastChildFill="False"
+                       Margin="10,4">
+                <CheckBox Content="Setup" 
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding IsSetupChecked}"/>
+                <Button Content="{Binding OpenCloseButtonText}" 
+                    Margin="6,0"
                     MinWidth="70"
                     Command="{Binding OpenCloseCommand}"/>
-            <TextBlock Width="20"/>
-            <TextBlock Text="Frequency,Hz "
+                <TextBlock Text="Frequency,Hz "
                        VerticalAlignment="Center"/>
-            <TextBox Text="{Binding FrequencyText, UpdateSourceTrigger=LostFocus}" 
+                <TextBox Text="{Binding FrequencyText, UpdateSourceTrigger=LostFocus}" 
                      MinWidth="40"
                      FontWeight="Bold"/>
-            <TextBlock Text=" Duty cycle,% "
+                <TextBlock Text=" Duty cycle,% "
                        VerticalAlignment="Center"/>
-            <TextBox Text="{Binding DutyCycleText, UpdateSourceTrigger=PropertyChanged}" 
+                <TextBox Text="{Binding DutyCycleText, UpdateSourceTrigger=PropertyChanged}" 
                      MinWidth="40"
                      FontWeight="Bold"/>
-            <TextBlock Text=" #DTI "
+                <TextBlock Text=" #DTI "
                        VerticalAlignment="Center"/>
-            <TextBox Text="{Binding DeadClocksText, UpdateSourceTrigger=PropertyChanged}" 
+                <TextBox Text="{Binding DeadClocksText, UpdateSourceTrigger=PropertyChanged}" 
                      MinWidth="40"
                      FontWeight="Bold"/>
-            <TextBlock Width="4"/>
-            <TextBlock Text="Samples: " VerticalAlignment="Center"/>
-            <TextBlock Width="70" 
+                <TextBlock Width="4"/>
+                <TextBlock Text="Samples: " VerticalAlignment="Center"/>
+                <TextBlock Width="70" 
                        Text="{Binding SamplesPerPeriodValue}" 
                        FontWeight="Bold"
                        VerticalAlignment="Center"/>
-            <TextBlock Width="2"/>
-            <Button Content="{Binding StartStopButtonText}" 
+                <TextBlock Width="2"/>
+                <Button Content="{Binding StartStopButtonText}" 
                     MinWidth="70"
                     Command="{Binding StartStopCommand}"/>
-            <Button Content=" + " Command="{Binding PlusCommand}"/>
-            <Button Content=" - " Command="{Binding MinusCommand}"/>
-            <TextBlock Width="20"/>
-            <CheckBox Content="Log" IsChecked="{Binding IsLogChecked}"/>
-            <!--
+                <TextBlock Width="6"/>
+                <Button Content=" + " Command="{Binding PlusCommand}"/>
+                <Button Content=" - " Command="{Binding MinusCommand}"/>
+                <TextBlock Width="6"/>
+                <CheckBox Content="Log" IsChecked="{Binding IsLogChecked}"
+                      VerticalAlignment="Center"/>
+
+                <!--
             <Button Content="Click"
                     MinWidth="70"
                     Command="{Binding ClickCommand}"/>
             -->
+            </DockPanel>
+
+            <!-- Serial port setup controls -->
+            <DockPanel DockPanel.Dock="Top" Margin="4"
+                   Visibility="{Binding IsSetupChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Border BorderThickness="1"
+                    CornerRadius="6"
+                    Padding="4"
+                    Background="Gainsboro"
+                    HorizontalAlignment="Left">
+                    <DockPanel>
+
+                        <TextBlock Text="Serial port: " VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding SerialPortName, UpdateSourceTrigger=LostFocus}" 
+                             MinWidth="50"
+                             FontWeight="Bold"/>
+                        <TextBlock Width="6"/>
+                        <TextBlock Text="Baud rate: " VerticalAlignment="Center"/>
+                        <ComboBox ItemsSource="{Binding BaudRates}" 
+                              SelectedItem="{Binding SelectedBaudRate}"
+                              MinWidth="80"
+                              FontWeight="Bold"/>
+                        <TextBlock/>
+
+                    </DockPanel>
+                </Border>
+            </DockPanel>
         </DockPanel>
-        
+
         <!-- Status bar at the bottom. -->
-        <DockPanel DockPanel.Dock="Bottom">
+        <DockPanel DockPanel.Dock="Bottom"
+                   Margin="10,0,10,6">
             <TextBlock Text="Log " VerticalAlignment="Center"/>
             <ComboBox ItemsSource="{Binding LogLines}" SelectedItem="{Binding SelectedLogLine}"/>
         </DockPanel>

@@ -1,7 +1,7 @@
-﻿<Window x:Class="WinMachine.Mvvm.ОбразОкнаПоказаИсключения"
+﻿<Window x:Class="WinMachine.Mvvm.DisplayExceptionWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Сообщение об отказе в программе" 
+        Title="Error occured" 
         WindowStartupLocation="CenterOwner" 
         Width="800"
         Height="450">
@@ -9,18 +9,19 @@
     <DockPanel Margin="30">
 
         <DockPanel DockPanel.Dock="Top">
-            <TextBlock Text="Опаньки... " FontWeight="Bold"/>
-            <TextBlock Text="{Binding Заголовок}"/>
+            <TextBlock Text="Error occured... " FontWeight="Bold"/>
+            <TextBlock Text="{Binding Header}"/>
         </DockPanel>
         <TextBlock DockPanel.Dock="Top">
-            Подробности возникшей ситуации:
+            Details:
         </TextBlock>
         <ListBox DockPanel.Dock="Top" 
-                 ItemsSource="{Binding Path=ЭтажиОшибки}" 
-                 SelectedItem="{Binding Path=ВыбранныйЭтажОшибки, Mode=TwoWay}"
+                 ItemsSource="{Binding Path=ErrorLevels}" 
+                 SelectedItem="{Binding Path=SelectedErrorLevel, Mode=TwoWay}"
                  Height="100"/>
-        <TextBlock DockPanel.Dock="Top" Text="{Binding Path=ИмяТипаОшибки, Mode=OneWay}" FontWeight="Bold"/>
-        <Button DockPanel.Dock="Bottom" HorizontalAlignment="Center" Click="НаКнопкуПродолжения">Продолжить, как-нибудь</Button>
+        <TextBlock DockPanel.Dock="Top" Text="{Binding Path=ErrorTypeName, Mode=OneWay}" FontWeight="Bold"/>
+        <Button DockPanel.Dock="Bottom" HorizontalAlignment="Center" 
+                Click="OnContinueClick" Content=" Continue, anyhow "/>
 
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
@@ -33,7 +34,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBox Grid.Row="0" Grid.Column="0"
-                Text="{Binding Path=ТекстСтекаВызовов, Mode=OneWay}"
+                Text="{Binding Path=ErrorStackText, Mode=OneWay}"
                 VerticalScrollBarVisibility="Auto"
                 HorizontalScrollBarVisibility="Auto"/>
 
@@ -42,7 +43,7 @@
                               HorizontalAlignment="Stretch"/>
 
             <TextBox Grid.Row="0" Grid.Column="2"
-                     Text="{Binding Path=ТекстОшибки, Mode=OneWay}" 
+                     Text="{Binding Path=ErrorText, Mode=OneWay}" 
                      VerticalScrollBarVisibility="Auto"
                      HorizontalScrollBarVisibility="Auto"/>
 

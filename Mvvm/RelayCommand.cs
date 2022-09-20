@@ -49,6 +49,5 @@ namespace WinMachine.Mvvm
         {
             execute(parameter);
         }
-
     }
 }

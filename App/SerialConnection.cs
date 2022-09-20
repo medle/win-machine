@@ -16,6 +16,8 @@ namespace WinMachine.App
         public static readonly int[] PopularBaudRates = { 9600, 115200 };
         public static readonly int[] OtherBaudRates = { /*14400, 19200, 28800, 38400, 57600*/ };
 
+        public const string DefaultPortName = "COM1";
+
         public SerialConnection(string portName, int baudRate = 115200) : base(portName, baudRate)
         {
             ReadTimeout = 3000;

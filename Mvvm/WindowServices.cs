@@ -7,14 +7,8 @@ using System.Text;
 
 namespace WinMachine.Mvvm
 {
-  /// <summary>
-  /// Helper methods for WPF windows.
-  /// </summary>
   public class WindowServices
   {
-    /// <summary>
-    /// Преобразователь для получения IWin32Window для окна WPF.
-    /// </summary>
     public class Wpf32Window : System.Windows.Forms.IWin32Window
     {
       public System.Windows.Window WpfWindow { get; private set; }
@@ -67,23 +61,14 @@ namespace WinMachine.Mvvm
       }
     }
 
-    /// <summary>
-    /// Создает объект из типа в потоке диспетчера UI. Объекты пользовательского
-    /// интерфейса, такие как Control и Window могут создаваться WPF только из
-    /// единственного потока STA диспетчера событий WPF.
-    /// </summary>
     public static object CreateInstanceOnUIThread(Type objectType)
     {
       Func<object> func = delegate { return Activator.CreateInstance(objectType); };
       return InvokeOnUIThread(func);
     }
 
-    /// <summary>
-    /// Возвращает текущий диспетчер WPF для приложения.
-    /// </summary>
     public static System.Windows.Threading.Dispatcher GetDispatcher()
     {
-      // Desktop implementation
       return Application.Current.Dispatcher;
     }
 
@@ -91,9 +76,6 @@ namespace WinMachine.Mvvm
 
     public static int ScreenHeightInPixels => System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height;
 
-    /// <summary>
-    /// Преобразует размер в точках WPF в размер в пикселях экрана.
-    /// </summary>
     public static double ConvertWpfPointsToPixels(double wpfPoints, LengthDirection direction)
     {
       // https://stackoverflow.com/questions/3286175/how-do-i-convert-a-wpf-size-to-physical-pixels
@@ -105,9 +87,6 @@ namespace WinMachine.Mvvm
       }
     }
 
-    /// <summary>
-    /// Преобразует размер в пикселях экрана в размер в точках WPF.
-    /// </summary>
     public static double ConvertPixelsToWpfPoints(int pixels, LengthDirection direction)
     {
       // https://stackoverflow.com/questions/3286175/how-do-i-convert-a-wpf-size-to-physical-pixels

@@ -10,14 +10,14 @@ namespace WinMachine.Mvvm
   {
     public static void ShowMessage(string message)
     {
-      var служба = new СлужбаДиалогов();
-      служба.Показать(message);
+      var service = new DialogService();
+      service.Show(message);
     }
 
     public static void ShowError(Exception e, string caption)
     {
-      var служба = new СлужбаДиалогов();
-      служба.Показать(e, caption);
+      var service = new DialogService();
+      service.Show(e, caption);
     }
   }
 }

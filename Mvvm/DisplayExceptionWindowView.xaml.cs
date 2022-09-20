@@ -14,17 +14,14 @@ using System.Windows.Shapes;
 
 namespace WinMachine.Mvvm
 {
-  /// <summary>
-  /// Interaction logic for ОбразОкнаПоказаИсключения.xaml
-  /// </summary>
-  public partial class ОбразОкнаПоказаИсключения : Window
+  public partial class DisplayExceptionWindowView : Window
   {
-    public ОбразОкнаПоказаИсключения()
+    public DisplayExceptionWindowView()
     {
       InitializeComponent();
     }
 
-    private void НаКнопкуПродолжения(object sender, RoutedEventArgs e)
+    private void OnContinueClick(object sender, RoutedEventArgs e)
     {
       Close();
     }
