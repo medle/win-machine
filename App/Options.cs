@@ -24,6 +24,7 @@ namespace WinMachine.App
             {
                 using (var writer = new JsonTextWriter(sw))
                 {
+                    writer.Formatting = Formatting.Indented;
                     serializer.Serialize(writer, this);
                 }
             }
@@ -55,6 +56,5 @@ namespace WinMachine.App
             UriBuilder uri = new UriBuilder(codeBase);
             return Uri.UnescapeDataString(uri.Path);
         }
-
     }
 }
