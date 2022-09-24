@@ -48,22 +48,22 @@
                 <TextBox Text="{Binding DeadClocksText, UpdateSourceTrigger=PropertyChanged}" 
                      MinWidth="40"
                      FontWeight="Bold"/>
-                <TextBlock Width="4"/>
-                <TextBlock Text="Samples: " VerticalAlignment="Center"/>
+                <TextBlock Width="6"/>
                 <TextBlock Width="70" 
-                       Text="{Binding SamplesPerPeriodValue}" 
-                       FontWeight="Bold"
-                       VerticalAlignment="Center"/>
-                <TextBlock Width="2"/>
+                           Text="{Binding SamplesPerPeriodValue}" 
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"/>
+                <TextBlock Width="6"/>
                 <Button Content="{Binding StartStopButtonText}" 
-                    MinWidth="70"
-                    Command="{Binding StartStopCommand}"/>
+                        MinWidth="70"
+                        Command="{Binding StartStopCommand}"/>
+                <!--
                 <TextBlock Width="6"/>
                 <Button Content=" + " Command="{Binding PlusCommand}"/>
                 <Button Content=" - " Command="{Binding MinusCommand}"/>
-                <TextBlock Width="6"/>
-                <CheckBox Content="Log" IsChecked="{Binding IsLogChecked}"
-                      VerticalAlignment="Center"/>
+                -->
 
                 <!--
             <Button Content="Click"
@@ -92,6 +92,9 @@
                               SelectedItem="{Binding SelectedBaudRate}"
                               MinWidth="80"
                               FontWeight="Bold"/>
+                        <TextBlock Width="6"/>
+                        <CheckBox Content="Log I/O" IsChecked="{Binding IsLogChecked}"
+                                  VerticalAlignment="Center"/>
                         <TextBlock/>
 
                     </DockPanel>
