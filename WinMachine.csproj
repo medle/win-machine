@@ -37,6 +37,9 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\SpiralGalaxy.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -73,11 +76,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="App\MainWindowModel.cs" />
-    <Compile Include="Images\Resource1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource1.resx</DependentUpon>
-    </Compile>
     <Compile Include="Mvvm\Dialogs.cs" />
     <Compile Include="Mvvm\MilliTimer.cs" />
     <Compile Include="Mvvm\WindowServices.cs" />
@@ -122,10 +120,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Images\Resource1.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -141,10 +135,10 @@
     <None Include="App\MachineApp.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\SpiralGalaxy.png" />
+    <Resource Include="Resources\SpiralGalaxy.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SpiralGalaxy.ico" />
+    <Resource Include="Resources\SpiralGalaxy.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -10,8 +10,7 @@
         Width="750" 
         ShowInTaskbar="False"
         Background="white"
-        Icon="pack://application:,,,/Images/SpiralGalaxy.png">
-
+        Icon="..\Resources\SpiralGalaxy.ico">
     <Window.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
