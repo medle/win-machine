@@ -79,8 +79,11 @@ namespace WinMachine.App
 
         public string Hello => RunCommand("HELLO");
 
-        public string StartPWM(int hz, int duty1024, int deadClocks)
-          => RunCommand($"PWM {hz} {duty1024} {deadClocks}");
+        public string SetDeadClocks(int deadClocks)
+            => RunCommand($"set dead_clocks {deadClocks}");
+
+        public string StartPWM(int hz, int duty1024)
+            => RunCommand($"PWM {hz} {duty1024}");
 
         public string RunADC(int analogPin) => RunCommand($"ADC {analogPin}");
 

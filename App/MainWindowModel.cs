@@ -220,7 +220,8 @@ namespace WinMachine.App
                     int hz = Int32.Parse(this.FrequencyText);
                     int duty1024 = machineDevice.ConvertDutyCycleToBase1024(this.DutyCycleText);
                     int deadClocks = Int32.Parse(this.DeadClocksText);
-                    Log(machineDevice.StartPWM(hz, duty1024, deadClocks));
+                    Log(machineDevice.SetDeadClocks(deadClocks));
+                    Log(machineDevice.StartPWM(hz, duty1024));
                     isStarted = true;
                     pollTimer.Start();
                 }

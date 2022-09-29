@@ -42,11 +42,6 @@
                 <TextBox Text="{Binding DutyCycleText, UpdateSourceTrigger=PropertyChanged}" 
                      MinWidth="40"
                      FontWeight="Bold"/>
-                <TextBlock Text=" #DTI "
-                       VerticalAlignment="Center"/>
-                <TextBox Text="{Binding DeadClocksText, UpdateSourceTrigger=PropertyChanged}" 
-                     MinWidth="40"
-                     FontWeight="Bold"/>
                 <TextBlock Width="6"/>
                 <TextBlock Width="70" 
                            Text="{Binding SamplesPerPeriodValue}" 
@@ -91,6 +86,12 @@
                               SelectedItem="{Binding SelectedBaudRate}"
                               MinWidth="80"
                               FontWeight="Bold"/>
+                        <TextBlock Width="6"/>
+                        <TextBlock Text="Dead clocks: "
+                                VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding DeadClocksText, UpdateSourceTrigger=PropertyChanged}" 
+                                MinWidth="40"
+                                FontWeight="Bold"/>
                         <TextBlock Width="6"/>
                         <CheckBox Content="Log I/O" IsChecked="{Binding IsLogChecked}"
                                   VerticalAlignment="Center"/>
