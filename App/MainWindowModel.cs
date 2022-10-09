@@ -299,7 +299,7 @@ namespace WinMachine.App
                 if (IsSearchChecked) {
                     int nextHz = waveAnalyzer.Analyze(FrequencyHz, samples);
                     if (nextHz != FrequencyHz) {
-                        FrequencyText = FrequencyHz.ToString();
+                        FrequencyText = nextHz.ToString();
                         DoReStart();
                     }
                 }

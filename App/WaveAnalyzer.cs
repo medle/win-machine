@@ -15,7 +15,7 @@ namespace WinMachine.App
         private int centerHz = 0;
         private int belowSample = 0;
         private int aboveSample = 0;
-        private int stepHz = 10;
+        private int stepHz = 50;
 
         public void Reset()
         {
