@@ -76,6 +76,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="App\MainWindowModel.cs" />
+    <Compile Include="App\WaveAnalyzer.cs" />
     <Compile Include="Mvvm\Dialogs.cs" />
     <Compile Include="Mvvm\MilliTimer.cs" />
     <Compile Include="Mvvm\WindowServices.cs" />

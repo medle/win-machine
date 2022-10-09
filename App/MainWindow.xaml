@@ -50,20 +50,13 @@
                            TextAlignment="Center"
                            VerticalAlignment="Center"/>
                 <TextBlock Width="6"/>
+                <CheckBox Content="Search" 
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding IsSearchChecked}"/>
+                <TextBlock Width="6"/>
                 <Button Content="{Binding StartStopButtonText}" 
                         MinWidth="70"
                         Command="{Binding StartStopCommand}"/>
-                <!--
-                <TextBlock Width="6"/>
-                <Button Content=" + " Command="{Binding PlusCommand}"/>
-                <Button Content=" - " Command="{Binding MinusCommand}"/>
-                -->
-
-                <!--
-            <Button Content="Click"
-                    MinWidth="70"
-                    Command="{Binding ClickCommand}"/>
-            -->
             </DockPanel>
 
             <!-- Serial port setup controls -->

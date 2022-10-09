@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Threading;
 using System.Windows.Input;
-using System.Globalization;
 using WinMachine.Mvvm;
 
 namespace WinMachine.App
@@ -17,9 +16,10 @@ namespace WinMachine.App
         private MachineDevice machineDevice = new MachineDevice();
         private IGraphDrawing graphDrawing;
         private DispatcherTimer pollTimer;
+        private WaveAnalyzer waveAnalyzer = new WaveAnalyzer();
 
-        private bool isOpen = false;
-        private bool isStarted = false;
+        private bool isSerialOpen = false;
+        private bool isMachineStarted = false;
 
         public MainWindowModel(IGraphDrawing graphDrawing)
         {
@@ -58,8 +58,6 @@ namespace WinMachine.App
 
         public void OnWindowKeyDown(KeyEventArgs e)
         {
-            if (e.Key == Key.Right) MoveFrequency(true);
-            if (e.Key == Key.Left) MoveFrequency(false);
         }
 
         public void Dispose()
@@ -71,11 +69,9 @@ namespace WinMachine.App
 
         public RelayCommand OpenCloseCommand => new RelayCommand(OnOpenClose);
         public RelayCommand StartStopCommand => new RelayCommand(OnStartStop);
-        public RelayCommand ClickCommand => new RelayCommand(OnClick);
-        public RelayCommand PlusCommand => new RelayCommand(OnPlus);
-        public RelayCommand MinusCommand => new RelayCommand(OnMinus);
 
-        public ObservableCollection<string> LogLines { get; private set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> LogLines { get; private set; } 
+            = new ObservableCollection<string>();
 
         private string _selectedLogLine;
         public string SelectedLogLine
@@ -132,6 +128,10 @@ namespace WinMachine.App
             }
         }
 
+        private int FrequencyHz => Int32.Parse(this.FrequencyText);
+        int Duty1024 => machineDevice.ConvertDutyCycleToBase1024(this.DutyCycleText);
+        int DeadClocks => Int32.Parse(this.DeadClocksText);
+
         private string _samplesPerPeriodValue;
         public string SamplesPerPeriodValue
         {
@@ -176,6 +176,18 @@ namespace WinMachine.App
             }
         }
 
+        private bool _isSearchChecked;
+        public bool IsSearchChecked
+        {
+            get => _isSearchChecked;
+            set
+            {
+                _isSearchChecked = value;
+                if (_isSearchChecked) waveAnalyzer.Reset();
+                RaisePropertyChanged(nameof(IsSearchChecked));
+            }
+        }
+
         public string SerialPortName { get; set; }
         public List<int> BaudRates { get; private set; }
         public int SelectedBaudRate { get; set; }
@@ -185,19 +197,19 @@ namespace WinMachine.App
 
         private void OnOpenClose()
         {
-            if (isOpen)
+            if (isSerialOpen)
             {
-                if (isStarted) OnStartStop();
+                if (isMachineStarted) OnStartStop();
                 machineDevice.Close();
                 Log("Closed device");
-                isOpen = false;
+                isSerialOpen = false;
             }
             else
             {
                 machineDevice.Open(SerialPortName, SelectedBaudRate);
                 Log($"Opened device: {machineDevice.PortName} at {machineDevice.BaudRate}");
                 Log($"Device: {machineDevice.Hello}");
-                isOpen = true;
+                isSerialOpen = true;
             }
 
             UpdateLabelsAfterModeChange();
@@ -205,41 +217,57 @@ namespace WinMachine.App
 
         private void OnStartStop()
         {
-            if (!isOpen) return;
-            if (isStarted)
-            {
-                pollTimer.Stop();
-                Log(machineDevice.Stop());
-                SamplesPerPeriodValue = "--";
-                isStarted = false;
+            if (!isSerialOpen) return;
+
+            try {
+                if (isMachineStarted) DoStop();
+                else DoStart();
             }
-            else
-            {
-                try
-                {
-                    int hz = Int32.Parse(this.FrequencyText);
-                    int duty1024 = machineDevice.ConvertDutyCycleToBase1024(this.DutyCycleText);
-                    int deadClocks = Int32.Parse(this.DeadClocksText);
-                    Log(machineDevice.SetDeadClocks(deadClocks));
-                    Log(machineDevice.StartPWM(hz, duty1024));
-                    isStarted = true;
-                    pollTimer.Start();
-                }
-                catch (Exception e)
-                {
-                    Log("Error: " + e.Message);
-                }
+            catch (Exception e) {
+                Log("Error: " + e.Message);
             }
 
             UpdateLabelsAfterModeChange();
+        }
+        
+        private int lastUsedDeadClocks = 0;
+
+        private void DoReStart()
+        {
+            if (isMachineStarted) DoStop();
+            DoStart();
+        }
+
+        private void DoStart()
+        {
+            if (isMachineStarted) return;
+
+            if (lastUsedDeadClocks != DeadClocks) {
+                Log(machineDevice.SetDeadClocks(DeadClocks));
+                lastUsedDeadClocks = DeadClocks;
+            }
+
+            Log(machineDevice.StartPWM(FrequencyHz, Duty1024));
+            isMachineStarted = true;
+            pollTimer.Start();
+        }
+
+        private void DoStop()
+        {
+            if (isMachineStarted) {
+                pollTimer.Stop();
+                Log(machineDevice.Stop());
+                SamplesPerPeriodValue = "--";
+                isMachineStarted = false;
+            }
         }
 
         private void UpdateLabelsAfterModeChange()
         {
             char square = '\u25A0';
             char triangle = '\u25BA';
-            this.OpenCloseButtonText = isOpen ? "Close" : "Open";
-            this.StartStopButtonText = isStarted ? $"Stop {square}" : (isOpen ? $"Start {triangle}" : "--");
+            this.OpenCloseButtonText = isSerialOpen ? "Close" : "Open";
+            this.StartStopButtonText = isMachineStarted ? $"Stop {square}" : (isSerialOpen ? $"Start {triangle}" : "--");
         }
 
         private void OnPollTimer()
@@ -247,44 +275,9 @@ namespace WinMachine.App
             RunADCAndDrawGraph();
         }
 
-        private void OnClick()
-        {
-            RunADCAndDrawGraph();
-        }
-
-        private void OnPlus() => MoveFrequency(true);
-        private void OnMinus() => MoveFrequency(false);
-
-        private void MoveFrequency(bool higher)
-        {
-            double hz, duty;
-            if (double.TryParse(this.FrequencyText, out hz) &&
-                double.TryParse(this.DutyCycleText, out duty))
-            {
-                // increase/decrease frequency by 1% retaining the pulse width
-                double periodSec = 1 / hz;
-                double dutySec = periodSec * duty / 100;
-                double newPeriodSec = periodSec * (higher ? 0.99 : 1.01);
-                double newDuty = dutySec / newPeriodSec * 100;
-                double newFreq = 1 / newPeriodSec;
-
-                this.FrequencyText = newFreq.ToString("F2");
-                this.DutyCycleText = newDuty.ToString("F2");
-                if (isOpen && isStarted)
-                {
-                    OnStartStop();
-                    OnStartStop();
-                }
-            }
-            else
-            {
-                Log("Failed to convert frequency/duty");
-            }
-        }
-
         private void RunADCAndDrawGraph()
         {
-            if (isStarted)
+            if (isMachineStarted)
             {
                 var samples = new List<int>();
                 string logText;
@@ -302,6 +295,14 @@ namespace WinMachine.App
                 logText = machineDevice.RunADC(2, samples);
                 graphDrawing.DrawGraph(2, samples, AdcSampleProfile.ACS712_30A8bit);
                 MaybeLogAdc(2, logText, samples);
+
+                if (IsSearchChecked) {
+                    int nextHz = waveAnalyzer.Analyze(FrequencyHz, samples);
+                    if (nextHz != FrequencyHz) {
+                        FrequencyText = FrequencyHz.ToString();
+                        DoReStart();
+                    }
+                }
             }
         }
 
