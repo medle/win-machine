@@ -19,7 +19,7 @@ namespace WinMachine.App
         {
         }
 
-        public void Open(string serialPortName, int baudRate)
+        public void OpenSerial(string serialPortName, int baudRate)
         {
             if (!IsOpen)
             {
@@ -32,11 +32,11 @@ namespace WinMachine.App
 
         public bool IsOpen => (serial != null && serial.IsOpen);
 
-        public void Close()
+        public void CloseSerial()
         {
             if (IsOpen)
             {
-                try { Stop(); } catch (Exception) { /*ignored*/}
+                try { SendStop(); } catch (Exception) { /*ignored*/}
                 serial.Close();
                 serial.Dispose();
                 serial = null;
@@ -82,12 +82,12 @@ namespace WinMachine.App
         public string SetDeadClocks(int deadClocks)
             => RunCommand($"set dead_clocks {deadClocks}");
 
-        public string StartPWM(int hz, int duty1024)
+        public string SendPWM(int hz, int duty1024)
             => RunCommand($"PWM {hz} {duty1024}");
 
         public string RunADC(int analogPin) => RunCommand($"ADC {analogPin}");
 
-        public string Stop() => RunCommand("STOP");
+        public string SendStop() => RunCommand("STOP");
 
         public string RunADC(int analogPin, IList<int> resultSamples)
         {

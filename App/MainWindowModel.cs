@@ -50,7 +50,7 @@ namespace WinMachine.App
             if (machineDevice.IsOpen)
             {
                 pollTimer.Stop();
-                machineDevice.Close();
+                machineDevice.CloseSerial();
             }
 
             SaveOptions();
@@ -200,13 +200,13 @@ namespace WinMachine.App
             if (isSerialOpen)
             {
                 if (isMachineStarted) OnStartStop();
-                machineDevice.Close();
+                machineDevice.CloseSerial();
                 Log("Closed device");
                 isSerialOpen = false;
             }
             else
             {
-                machineDevice.Open(SerialPortName, SelectedBaudRate);
+                machineDevice.OpenSerial(SerialPortName, SelectedBaudRate);
                 Log($"Opened device: {machineDevice.PortName} at {machineDevice.BaudRate}");
                 Log($"Device: {machineDevice.Hello}");
                 isSerialOpen = true;
@@ -232,10 +232,9 @@ namespace WinMachine.App
         
         private int lastUsedDeadClocks = 0;
 
-        private void DoReStart()
+        private void DoUpdateWaveform()
         {
-            if (isMachineStarted) DoStop();
-            DoStart();
+            if (isMachineStarted) machineDevice.SendPWM(FrequencyHz, Duty1024);
         }
 
         private void DoStart()
@@ -247,7 +246,7 @@ namespace WinMachine.App
                 lastUsedDeadClocks = DeadClocks;
             }
 
-            Log(machineDevice.StartPWM(FrequencyHz, Duty1024));
+            Log(machineDevice.SendPWM(FrequencyHz, Duty1024));
             isMachineStarted = true;
             pollTimer.Start();
         }
@@ -256,7 +255,7 @@ namespace WinMachine.App
         {
             if (isMachineStarted) {
                 pollTimer.Stop();
-                Log(machineDevice.Stop());
+                Log(machineDevice.SendStop());
                 SamplesPerPeriodValue = "--";
                 isMachineStarted = false;
             }
@@ -300,7 +299,7 @@ namespace WinMachine.App
                     int nextHz = waveAnalyzer.Analyze(FrequencyHz, samples);
                     if (nextHz != FrequencyHz) {
                         FrequencyText = nextHz.ToString();
-                        DoReStart();
+                        DoUpdateWaveform();
                     }
                 }
             }
