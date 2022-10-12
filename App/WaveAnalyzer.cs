@@ -8,7 +8,7 @@ namespace WinMachine.App
 {
     public class WaveAnalyzer
     {
-        private int stepHz = 25;
+        private int stepHz = 50;
         private int waitBeforeAdcMs = 50;
 
         public int Analyze(MachineDevice machineDevice, int channel)
@@ -30,6 +30,8 @@ namespace WinMachine.App
             Thread.Sleep(waitBeforeAdcMs);
             machineDevice.RunADC(channel, samples);
             var aboveMax = samples.Max();
+
+            System.Diagnostics.Trace.WriteLine($"c={centerMax} b={belowMax} a={aboveMax}");
 
             int nextHz = centerHz;
             if (belowMax >= centerMax && belowMax >= aboveMax) nextHz = belowHz;
