@@ -2,53 +2,41 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace WinMachine.App
 {
     public class WaveAnalyzer
     {
-        public enum SearchState { Initial, Below, Above };
+        private int stepHz = 25;
+        private int waitBeforeAdcMs = 50;
 
-        private SearchState searchState;
-        private int centerSample = 0;
-        private int centerHz = 0;
-        private int belowSample = 0;
-        private int aboveSample = 0;
-        private int stepHz = 50;
-
-        public void Reset()
+        public int Analyze(MachineDevice machineDevice, int channel)
         {
-            searchState = SearchState.Initial;
-        }
+            var samples = new List<int>();
 
-        public int Analyze(int hz, List<int> samples) 
-        {
-            int maxSample = samples.Max();
+            var centerHz = machineDevice.FrequencyHz;
+            machineDevice.RunADC(channel, samples);
+            var centerMax = samples.Max();
 
-            switch (searchState) {
+            var belowHz = centerHz - stepHz;
+            machineDevice.SendPWM(belowHz);
+            Thread.Sleep(waitBeforeAdcMs);
+            machineDevice.RunADC(channel, samples);
+            var belowMax = samples.Max();
 
-                case SearchState.Initial:
-                    centerSample = maxSample;
-                    centerHz = hz;
-                    searchState = SearchState.Below;
-                    return centerHz - stepHz;
+            var aboveHz = centerHz + stepHz;
+            machineDevice.SendPWM(aboveHz);
+            Thread.Sleep(waitBeforeAdcMs);
+            machineDevice.RunADC(channel, samples);
+            var aboveMax = samples.Max();
 
-                case SearchState.Below:
-                    belowSample = maxSample;
-                    searchState = SearchState.Above;
-                    return centerHz + stepHz;
+            int nextHz = centerHz;
+            if (belowMax >= centerMax && belowMax >= aboveMax) nextHz = belowHz;
+            if (aboveMax >= centerMax && aboveMax >= belowMax) nextHz = aboveHz;
 
-                case SearchState.Above:
-                    aboveSample = maxSample;
-                    searchState = SearchState.Initial;
-                    if (centerSample >= belowSample && centerSample >= aboveSample) return centerHz;
-                    if (belowSample >= centerSample && belowSample >= aboveSample) return centerHz - stepHz;
-                    if (aboveSample >= centerSample && aboveSample >= belowSample) return centerHz + stepHz;
-                    break;
-            }
-
-            return hz;
+            if (nextHz != aboveHz) machineDevice.SendPWM(nextHz);
+            return nextHz;
         }
     }
 }

@@ -15,7 +15,8 @@ namespace WinMachine.App
 
         private MachineDevice machineDevice = new MachineDevice();
         private IGraphDrawing graphDrawing;
-        private DispatcherTimer pollTimer;
+        private DispatcherTimer redrawTimer;
+        private DispatcherTimer searchTimer;
         private WaveAnalyzer waveAnalyzer = new WaveAnalyzer();
 
         private bool isSerialOpen = false;
@@ -28,9 +29,13 @@ namespace WinMachine.App
 
             this.graphDrawing = graphDrawing;
 
-            pollTimer = new DispatcherTimer();
-            pollTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
-            pollTimer.Tick += delegate { OnPollTimer(); };
+            redrawTimer = new DispatcherTimer();
+            redrawTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            redrawTimer.Tick += delegate { OnRedrawTimer(); };
+
+            searchTimer = new DispatcherTimer();
+            searchTimer.Interval = new TimeSpan(0, 0, 0, 1);
+            searchTimer.Tick += delegate { OnSearchTimer(); };
 
             UpdateLabelsAfterModeChange();
         }
@@ -49,7 +54,7 @@ namespace WinMachine.App
         {
             if (machineDevice.IsOpen)
             {
-                pollTimer.Stop();
+                redrawTimer.Stop();
                 machineDevice.CloseSerial();
             }
 
@@ -128,8 +133,16 @@ namespace WinMachine.App
             }
         }
 
-        private int FrequencyHz => Int32.Parse(this.FrequencyText);
-        int Duty1024 => machineDevice.ConvertDutyCycleToBase1024(this.DutyCycleText);
+        private int FrequencyHz
+        {
+            get => Int32.Parse(this.FrequencyText);
+            set {
+                FrequencyText = value.ToString();
+            }
+        }
+
+
+        int Duty => Int32.Parse(this.DutyCycleText);
         int DeadClocks => Int32.Parse(this.DeadClocksText);
 
         private string _samplesPerPeriodValue;
@@ -183,7 +196,8 @@ namespace WinMachine.App
             set
             {
                 _isSearchChecked = value;
-                if (_isSearchChecked) waveAnalyzer.Reset();
+                if (value) searchTimer.Start();
+                else searchTimer.Stop();
                 RaisePropertyChanged(nameof(IsSearchChecked));
             }
         }
@@ -232,11 +246,6 @@ namespace WinMachine.App
         
         private int lastUsedDeadClocks = 0;
 
-        private void DoUpdateWaveform()
-        {
-            if (isMachineStarted) machineDevice.SendPWM(FrequencyHz, Duty1024);
-        }
-
         private void DoStart()
         {
             if (isMachineStarted) return;
@@ -246,15 +255,15 @@ namespace WinMachine.App
                 lastUsedDeadClocks = DeadClocks;
             }
 
-            Log(machineDevice.SendPWM(FrequencyHz, Duty1024));
+            Log(machineDevice.SendPWM(FrequencyHz, Duty));
             isMachineStarted = true;
-            pollTimer.Start();
+            redrawTimer.Start();
         }
 
         private void DoStop()
         {
             if (isMachineStarted) {
-                pollTimer.Stop();
+                redrawTimer.Stop();
                 Log(machineDevice.SendStop());
                 SamplesPerPeriodValue = "--";
                 isMachineStarted = false;
@@ -269,7 +278,7 @@ namespace WinMachine.App
             this.StartStopButtonText = isMachineStarted ? $"Stop {square}" : (isSerialOpen ? $"Start {triangle}" : "--");
         }
 
-        private void OnPollTimer()
+        private void OnRedrawTimer()
         {
             RunADCAndDrawGraph();
         }
@@ -294,14 +303,13 @@ namespace WinMachine.App
                 logText = machineDevice.RunADC(2, samples);
                 graphDrawing.DrawGraph(2, samples, AdcSampleProfile.ACS712_30A8bit);
                 MaybeLogAdc(2, logText, samples);
+            }
+        }
 
-                if (IsSearchChecked) {
-                    int nextHz = waveAnalyzer.Analyze(FrequencyHz, samples);
-                    if (nextHz != FrequencyHz) {
-                        FrequencyText = nextHz.ToString();
-                        DoUpdateWaveform();
-                    }
-                }
+        private void OnSearchTimer()
+        {
+            if (isMachineStarted) {
+                FrequencyHz = waveAnalyzer.Analyze(machineDevice, 2);
             }
         }
 

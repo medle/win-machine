@@ -82,8 +82,19 @@ namespace WinMachine.App
         public string SetDeadClocks(int deadClocks)
             => RunCommand($"set dead_clocks {deadClocks}");
 
-        public string SendPWM(int hz, int duty1024)
-            => RunCommand($"PWM {hz} {duty1024}");
+        public int DutyCycle { get; private set; }
+        public int FrequencyHz { get; private set; }
+
+        public string SendPWM(int hz) => SendPWM(hz, DutyCycle);
+
+        public string SendPWM(int hz, int duty)
+        {
+            var duty1024 = ConvertDutyCycleToBase1024(duty);
+            var result = RunCommand($"PWM {hz} {duty1024}");
+            DutyCycle = duty;
+            FrequencyHz = hz;
+            return result;
+        }
 
         public string RunADC(int analogPin) => RunCommand($"ADC {analogPin}");
 
@@ -148,9 +159,14 @@ namespace WinMachine.App
 
             if (!double.TryParse(dutyCycle100, out duty100))
                 throw new Exception($"Can't convert duty cycle value [{dutyCycle100}] to number");
+
+            return ConvertDutyCycleToBase1024(dutyCycle100);
+        }
+
+        public int ConvertDutyCycleToBase1024(int duty100)
+        {
             if (duty100 < 1 || duty100 > 99)
                 throw new Exception($"Duty cycle {duty100}% out of range [1,99]");
-
             return (int)(1024 * duty100 / 100);
         }
     }
