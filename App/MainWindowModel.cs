@@ -61,8 +61,23 @@ namespace WinMachine.App
             SaveOptions();
         }
 
+        private const int stepHz = 50;
+
         public void OnWindowKeyDown(KeyEventArgs e)
         {
+            if (e.Key == Key.F5) {
+                if (!isMachineStarted) return;
+                int hz = FrequencyHz - stepHz;
+                Log(machineDevice.SendPWM(hz));
+                FrequencyHz = hz;
+            }
+
+            if (e.Key == Key.F6) {
+                if (!isMachineStarted) return;
+                int hz = FrequencyHz + stepHz;
+                Log(machineDevice.SendPWM(hz));
+                FrequencyHz = hz;
+            }
         }
 
         public void Dispose()
