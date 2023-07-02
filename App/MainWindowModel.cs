@@ -270,7 +270,7 @@ namespace WinMachine.App
                 lastUsedDeadClocks = DeadClocks;
             }
 
-            Log(machineDevice.SendPWM(FrequencyHz, Duty));
+            Log(machineDevice.SendRUN(FrequencyHz, Duty));
             isMachineStarted = true;
             redrawTimer.Start();
         }

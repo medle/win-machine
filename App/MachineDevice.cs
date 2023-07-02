@@ -96,6 +96,15 @@ namespace WinMachine.App
             return result;
         }
 
+        public string SendRUN(int hz, int duty)
+        {
+            var duty1024 = ConvertDutyCycleToBase1024(duty);
+            var result = RunCommand($"RUN {hz} {duty1024}");
+            DutyCycle = duty;
+            FrequencyHz = hz;
+            return result;
+        }
+
         public string RunADC(int analogPin) => RunCommand($"ADC {analogPin}");
 
         public string SendStop() => RunCommand("STOP");
