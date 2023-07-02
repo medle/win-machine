@@ -46,7 +46,7 @@ namespace WinMachine.App
         public static readonly AdcSampleProfile DC8bit = 
             new AdcSampleProfile(true, 0, 255, "V", 0, 5);
 
-    private const int fix = 5;
+        private const int fix = 5;
 
         // 23.09.2020: 0A=128adc, 1.74A=145adc, 1.74*2.87=5, (145-128=17)*2.87=49
         // +5A=>128+49=177, -5A=128-49=79
