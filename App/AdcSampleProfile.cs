@@ -46,13 +46,15 @@ namespace WinMachine.App
         public static readonly AdcSampleProfile DC8bit = 
             new AdcSampleProfile(true, 0, 255, "V", 0, 5);
 
+    private const int fix = 5;
+
         // 23.09.2020: 0A=128adc, 1.74A=145adc, 1.74*2.87=5, (145-128=17)*2.87=49
         // +5A=>128+49=177, -5A=128-49=79
         public static readonly AdcSampleProfile ACS712_5A8bit = 
-            new AdcSampleProfile(false, 79, 177, "A", -5, 5);
+            new AdcSampleProfile(false, 79 + fix, 177 + fix, "A", -5, 5);
 
         // (0.5V,4.5V) => (-30A,+30A) from=255*10/100=25 to=255-25=230
         public static readonly AdcSampleProfile ACS712_30A8bit = 
-            new AdcSampleProfile(false, 25, 230, "A", -30, 30);
+            new AdcSampleProfile(false, 25 + fix + 2, 230 + fix + 2, "A", -30, 30);
     }
 }
